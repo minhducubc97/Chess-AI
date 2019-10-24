@@ -1,12 +1,6 @@
-import { Chess } from "./chess";
-
-var board = null;
-var game = new Chess();
-
-/*
+/**
  * Purpose: Make a random move on the chess board
- * Parameters: None
- * Return: void or possible move
+ * @returns {void/string} possible moves or void
  */
 var getRandomMove = function () {
     // if there is no more possible moves, the game is over
@@ -20,12 +14,11 @@ var getRandomMove = function () {
     }
 }
 
-/*
+/**
  * Purpose: Evaluate the current chess board
- * Parameters: 
- * - board: chessBoard
- * - color: player color ('black' or 'white')
- * Return: total relative values of the chess board
+ * @param {*} board chess board
+ * @param {*} color player color ('black' or 'white')
+ * @returns {int} total relative values of the chess board
  */
 var evaluateChessBoard = function (board, color) {
     // assign each chess piece relative value based on https://en.wikipedia.org/wiki/Chess_piece_relative_value
@@ -53,11 +46,10 @@ var evaluateChessBoard = function (board, color) {
     return totalRV;
 }
 
-/*
+/**
  * Purpose: Calculate the best one-move-ahead move
- * Parameters: 
- * - color: player color ('black' or 'white')
- * Return: the best one-move-ahead move
+ * @param {*} color 
+ * @returns {string} the best one-move-ahead move
  */
 var calculate1MoveAhead = function (color) {
     // if there is no more possible moves, the game is over
@@ -86,42 +78,42 @@ var calculate1MoveAhead = function (color) {
     return currBest1MoveAhead;
 }
 
-function onDragPiece(source, piece, position, orientation) {
-    // if the game is over, do not pick up the chess pieces
-    if (game.game_over())
-        return false;
-
-    // only pick up pieces for White
-    else if (piece.search(/^b/) !== -1)
-        return false;
+/**
+ * Purpose: Calculate the next move using Minimax algorithm 
+ * @param {*} counter iteration counter
+ * @param {*} game chess game
+ * @param {*} color player color ('black' or 'white')
+ * @param {*} isMaximizingPlayerValue if true, maximizing player' minimum value; else, minimizing opponent's maximum value
+ * @returns {*}
+ */
+var calculateNextMovesMinimax = function (counter, game, color, isMaximizingPlayerValue = true) {
+    if (counter === 0) {
+        value = evaluateChessBoard(game.board(), color);
+        return [value, null];
+    }
+    else {
+        var bestMoveMinimax = null;
+        var bestMoveValue = isMaximizingPlayerValue ? -100 : 100;
+        var possibleMoves = game.moves();
+        // calculate every possible moves
+        for (var i = 0; i < possibleMoves.length; i++) {
+            var move = possibleMoves[i];
+            game.move(move);
+            value = calculateNextMovesMinimax(counter--, game, color, !isMaximizingPlayerValue)[0];
+            if (isMaximizingPlayerValue) {
+                if (value > bestMoveValue) {
+                    bestMoveMinimax = move;
+                    bestMoveValue = value;
+                }
+            }
+            else {
+                if (value < bestMoveValue) {
+                    bestMoveMinimax = move;
+                    bestMoveValue = value;
+                }
+            }
+            game.undo();
+        }
+        return [bestMoveValue, bestMove || possibleMoves[0]];
+    }
 }
-
-function onDropPiece(source, target) {
-    // check if the move is legal
-    var move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q' // Default promote pawn to queen
-    })
-
-    if (move === null)
-        return 'snapback';
-
-    // make a random move for black
-    window.setTimeout(makeRandomMove, 300);
-}
-
-// update the board position after the piece snap
-function onSnapPiece() {
-    board.position(game.fen());
-}
-
-var gameConfig = {
-    draggable: true,
-    position: 'start',
-    onDragPiece: onDragPiece,
-    onDropPiece: onDropPiece,
-    onSnapPiece: onSnapPiece
-}
-
-board = Chessboard('myChessBoard', gameConfig);

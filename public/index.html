@@ -1,12 +1,22 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-    <title>My first node project</title>
+    <meta charset="utf-8">
+    <title>Chess game</title>
+    <link rel="stylesheet" href="./css/chessboard-1.0.0.css">
 </head>
 
 <body>
-    <h1>Hello from my first Node.js project!</h1>
-    <p>It's working</p>
+    <div id="board" style="width: 400px"></div>
 </body>
+
+<!-- Load the javascript in order -->
+<script src="./js/jquery-3.4.1.js"></script>
+<script src="./js/chess.js"></script>
+<script src="./js/chessboard-1.0.0.js"></script>
+<script src="./js/chessBrain.js"></script>
+<script src="./js/main.js"></script>
+<script src="./js/boardConfig.js"></script>
 
 </html>
