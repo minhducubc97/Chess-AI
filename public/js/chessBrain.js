@@ -50,7 +50,7 @@ var calculate1MoveAhead = function (color) {
 
     // try out every possible move to find the move with the highest relative value
     var currBest1MoveAhead = null;
-    var currBest1MoveAheadRV = -100;
+    var currBest1MoveAheadRV = Number.NEGATIVE_INFINITY;
     possibleMoves.forEach(function (move) {
         game.move(move);
         var moveRV = evaluateChessBoard(game.board(), color);
@@ -65,32 +65,32 @@ var calculate1MoveAhead = function (color) {
 }
 
 /**
- * Purpose: Find the next move using Minimax algorithm 
+ * Purpose: Find the next move using Negamax algorithm (based on MiniMax)
  * @param {*} counter iteration counter
  * @param {*} game chess game
  * @param {*} color player color ('black' or 'white')
  * @returns {*}
  */
-var calculateNextMovesMinimax = function (counter, game, color) {
-    return (calculateNextMovesValueMinimax(counter, game, color)[0] || game.moves()[0]);
+var calculateNextMovesNegamax = function (counter, game, color) {
+    return (calculateNextMovesValueNegamax(counter, game, color)[0] || game.moves()[0]);
 }
 
 /**
- * Purpose: Calculate the next move value using Minimax algorithm 
+ * Purpose: Calculate the next move value using Negamax algorithm, with the inclusion of Alpha-beta pruning
  * @param {*} counter iteration counter
  * @param {*} game chess game
  * @param {*} color player color ('black' or 'white')
  * @param {*} isMaximizingPlayerValue if true, maximizing player' minimum value; else, minimizing opponent's maximum value
  * @returns {*}
  */
-var calculateNextMovesValueMinimax = function (counter, game, color, isMaximizingPlayerValue = true) {
+var calculateNextMovesValueNegamax = function (counter, game, color, isMaximizingPlayerValue = true, alpha = Number.NEGATIVE_INFINITY, beta = Number.POSITIVE_INFINITY) {
     if (counter === 0) {
         value = evaluateChessBoard(game.board(), color);
         return [null, value];
     }
     else {
-        var bestMoveMinimax = null;
-        var bestMoveValue = isMaximizingPlayerValue ? -100 : 100;
+        var bestMoveNegamax = null;
+        var bestMoveValue = isMaximizingPlayerValue ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
         var possibleMoves = game.moves();
         possibleMoves.sort(function (a, b) {
             return .5 - Math.random()
@@ -99,22 +99,31 @@ var calculateNextMovesValueMinimax = function (counter, game, color, isMaximizin
         for (var i = 0; i < possibleMoves.length; i++) {
             var move = possibleMoves[i];
             game.move(move);
-            value = calculateNextMovesMinimax(counter - 1, game, color, !isMaximizingPlayerValue)[1];
+            console.log(move);
+            value = calculateNextMovesNegamax(counter - 1, game, color, !isMaximizingPlayerValue, alpha, beta)[1];
 
             if (isMaximizingPlayerValue) {
                 if (value > bestMoveValue) {
-                    bestMoveMinimax = move;
+                    bestMoveNegamax = move;
                     bestMoveValue = value;
                 }
+                alpha = Math.max(value, alpha);
             }
             else {
                 if (value < bestMoveValue) {
-                    bestMoveMinimax = move;
+                    bestMoveNegamax = move;
                     bestMoveValue = value;
                 }
+                beta = Maths.min(value, beta);
             }
             game.undo();
+            console.log("Alpha: " + alpha + "; Beta: " + beta);
+
+            if (alpha >= beta) {
+                console.log("Alpha: " + alpha + "; Beta: " + beta);
+                break;
+            }
         }
-        return [bestMoveMinimax, bestMoveValue];
+        return [bestMoveNegamax, bestMoveValue];
     }
 }

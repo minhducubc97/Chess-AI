@@ -25,7 +25,7 @@ var movePiece = function (algorithm, calAhead = 3) {
             // medium mode
             case 2:
             default:
-                move = calculateNextMovesMinimax(calAhead, game, game.turn());
+                move = calculateNextMovesNegamax(calAhead, game, game.turn());
                 console.log(move);
                 break;
         }
