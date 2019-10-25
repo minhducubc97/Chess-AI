@@ -22,7 +22,9 @@ var onDrop = function (source, target) {
         return 'snapback';
 
     // make a random move for black
-    window.setTimeout(makeRandomMove, 300);
+    window.setTimeout(function () {
+        movePiece(1, 3);
+    }, 300);
 }
 
 // update the board position after the piece snap

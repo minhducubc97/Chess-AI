@@ -11,52 +11,19 @@ var movePiece = function (algorithm, calAhead = 3) {
     else {
         var move = null;
         switch (algorithm) {
+            // very easy mode - calculate only 1 step ahead
             case 1:
-                move = getRandomMove();
-                break;
-            case 2:
                 move = calculate1MoveAhead(game.turn());
+                console.log(move);
                 break;
+            // medium mode
+            case 2:
             default:
-                move = calculateNextMovesMinimax(calAhead, game, game.turn())[1];
+                move = calculateNextMovesMinimax(calAhead, game, game.turn());
+                console.log(move);
                 break;
         }
         game.move(move);
         board.position(game.fen());
     }
 }
-
-// Computer vs Computer
-var playGame = function (algo = 4, skillW = 2, skillB = 2) {
-    if (game.game_over() === true) {
-        console.log('game over');
-        return;
-    }
-    var skill = game.turn() === 'w' ? skillW : skillB;
-    makeMove(algo, skill);
-    window.setTimeout(function () {
-        playGame(algo, skillW, skillB);
-    }, 250);
-};
-
-// Handles what to do after human makes move.
-// Computer automatically makes next move
-var onDrop = function (source, target) {
-    // see if the move is legal
-    var move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q' // NOTE: always promote to a queen for example simplicity
-    });
-
-    // If illegal move, snapback
-    if (move === null) return 'snapback';
-
-    // Log the move
-    console.log(move)
-
-    // make move for black
-    window.setTimeout(function () {
-        makeMove(4, 3);
-    }, 250);
-};
