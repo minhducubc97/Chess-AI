@@ -4,6 +4,9 @@
 var board = null;
 var game = new Chess();
 
+// First 3 moves will just be occupying good positions
+var gameStart = 3;
+
 /**
  * Purpose: move chess piece using the specified algorithm
  * @param {*} algorithm the specified algorithm
@@ -61,9 +64,17 @@ var onDrop = function (source, target) {
     if (move === null)
         return 'snapback';
 
-    window.setTimeout(function () {
-        movePiece(2, 3);
-    }, 300);
+    if (gameStart > 0) {
+        window.setTimeout(function () {
+            movePiece(2, 2);
+        }, 250);
+        gameStart--;
+    }
+    else {
+        window.setTimeout(function () {
+            movePiece(2, 3);
+        }, 250);
+    }
 }
 
 /**

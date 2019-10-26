@@ -1,35 +1,158 @@
 /**
+ * Purpose: Reverse a 2D array
+ * @param {*} array 
+ */
+var reverse2DArray = function (array) {
+    array.forEach(function (row) {
+        row.reverse();
+    });
+    array.reverse();
+    return array;
+};
+
+var pawnWhiteEvaluation = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [50, 50, 50, 50, 50, 50, 50, 50],
+    [10, 10, 20, 30, 30, 20, 10, 10],
+    [5, 5, 10, 25, 25, 10, 5, 5],
+    [0, 0, 0, 20, 20, 0, 0, 0],
+    [5, -5, -10, 0, 0, -10, -5, 5],
+    [5, 10, 10, -20, -20, 10, 10, 5],
+    [0, 0, 0, 0, 0, 0, 0, 0]
+];
+
+var pawnBlackEvaluation = reverse2DArray(pawnWhiteEvaluation);
+
+var knightWhiteEvaluation = [
+    [-50, -40, -30, -30, -30, -30, -40, -50],
+    [-40, -20, 0, 0, 0, 0, -20, -40],
+    [-30, 0, 10, 15, 15, 10, 0, -30],
+    [-30, 5, 15, 20, 20, 15, 5, -30],
+    [-30, 0, 15, 20, 20, 15, 0, -30],
+    [-30, 5, 10, 15, 15, 10, 5, -30],
+    [-40, -20, 0, 5, 5, 0, -20, -40],
+    [-50, -40, -30, -30, -30, -30, -40, -50]
+];
+
+var knightBlackEvaluation = reverse2DArray(knightWhiteEvaluation);
+
+var bishopWhiteEvaluation = [
+    [-20, -10, -10, -10, -10, -10, -10, -20],
+    [-10, 0, 0, 0, 0, 0, 0, -10],
+    [-10, 0, 5, 10, 10, 5, 0, -10],
+    [-10, 5, 5, 10, 10, 5, 5, -10],
+    [-10, 0, 10, 10, 10, 10, 0, -10],
+    [-10, 10, 10, 10, 10, 10, 10, -10],
+    [-10, 5, 0, 0, 0, 0, 5, -10],
+    [-20, -10, -10, -10, -10, -10, -10, -20]
+];
+
+var bishopBlackEvaluation = reverse2DArray(bishopWhiteEvaluation);
+
+var rooksWhiteEvaluation = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [5, 10, 10, 10, 10, 10, 10, 5],
+    [-5, 0, 0, 0, 0, 0, 0, -5],
+    [-5, 0, 0, 0, 0, 0, 0, -5],
+    [-5, 0, 0, 0, 0, 0, 0, -5],
+    [-5, 0, 0, 0, 0, 0, 0, -5],
+    [-5, 0, 0, 0, 0, 0, 0, -5],
+    [0, 0, 0, 5, 5, 0, 0, 0]
+];
+
+var rooksBlackEvaluation = reverse2DArray(rooksWhiteEvaluation);
+
+var queenWhiteEvaluation = [
+    [-20, -10, -10, -5, -5, -10, -10, -20],
+    [-10, 0, 0, 0, 0, 0, 0, -10],
+    [-10, 0, 5, 5, 5, 5, 0, -10],
+    [-5, 0, 5, 5, 5, 5, 0, -5],
+    [0, 0, 5, 5, 5, 5, 0, -5],
+    [-10, 5, 5, 5, 5, 5, 0, -10],
+    [-10, 0, 5, 0, 0, 0, 0, -10],
+    [-20, -10, -10, -5, -5, -10, -10, -20]
+];
+
+var queenBlackEvaluation = reverse2DArray(queenWhiteEvaluation);
+
+var kingWhiteEvaluation = [
+    [-30, -40, -40, -50, -50, -40, -40, -30],
+    [-30, -40, -40, -50, -50, -40, -40, -30],
+    [-30, -40, -40, -50, -50, -40, -40, -30],
+    [-30, -40, -40, -50, -50, -40, -40, -30],
+    [-20, -30, -30, -40, -40, -30, -30, -20],
+    [-10, -20, -20, -20, -20, -20, -20, -10],
+    [20, 20, 0, 0, 0, 0, 20, 20],
+    [20, 30, 10, 0, 0, 10, 30, 20]
+];
+
+var kingBlackEvaluation = reverse2DArray(kingWhiteEvaluation);
+
+var kingWhiteEndGameEvaluation = [
+    [-50, -40, -30, -20, -20, -30, -40, -50],
+    [-30, -20, -10, 0, 0, -10, -20, -30],
+    [-30, -10, 20, 30, 30, 20, -10, -30],
+    [-30, -10, 30, 40, 40, 30, -10, -30],
+    [-30, -10, 30, 40, 40, 30, -10, -30],
+    [-30, -10, 20, 30, 30, 20, -10, -30],
+    [-30, -30, 0, 0, 0, 0, -30, -30],
+    [-50, -30, -30, -30, -30, -30, -30, -50]
+];
+
+var kingBlackEndGameEvaluation = reverse2DArray(kingWhiteEndGameEvaluation);
+
+// assign each chess piece relative value based on https://www.chessprogramming.org/Simplified_Evaluation_Function
+var chessPieceRV = {
+    'p': 100, // pawn
+    'n': 320, // knight
+    'b': 330, // bishop
+    'r': 500, // rooks
+    'q': 900, // queen
+    'k': 20000 // king
+};
+
+/**
  * Purpose: Evaluate the current chess board
  * @param {*} board chess board
  * @param {*} color player color ('black' or 'white')
  * @returns {int} total relative values of the chess board
  */
 var evaluateChessBoard = function (board, color) {
-    // assign each chess piece relative value based on https://en.wikipedia.org/wiki/Chess_piece_relative_value
-    var chessPieceRV = {
-        'p': 1, // pawn
-        'n': 3, // knight
-        'b': 3, // bishop
-        'r': 5, // rook
-        'q': 9, // queen
-        'k': 100 // I value King as 100 since it is the most important piece
-    };
-
     // calculate the total value on the chess board
     var totalRV = 0;
-    board.forEach(function (row) {
-        row.forEach(function (piece) {
-            if (piece !== null) {
-                if (piece['color'] === color) {
-                    totalRV += chessPieceRV[piece['type']];
+    for (var i = 0; i < 8; i++) {
+        for (var j = 0; j < 8; j++) {
+            if (board[i][j] !== null) {
+                if (board[i][j]['color'] === color) {
+                    totalRV += getPieceRV(board[i][j], i, j, color);
                 }
                 else {
-                    totalRV -= chessPieceRV[piece['type']];
+                    totalRV -= getPieceRV(board[i][j], i, j, color);
                 }
             }
-        });
-    });
+        }
+    }
     return totalRV;
+}
+
+var getPieceRV = function (piece, xcoord, ycoord, color) {
+    switch (piece.type) {
+        case 'p':
+            return chessPieceRV[piece.type] + (color === 'b' ? pawnBlackEvaluation[ycoord][xcoord] : pawnWhiteEvaluation[ycoord][xcoord]);
+        case 'n':
+            return chessPieceRV[piece.type] + (color === 'b' ? knightBlackEvaluation[ycoord][xcoord] : knightWhiteEvaluation[ycoord][xcoord]);
+        case 'b':
+            return chessPieceRV[piece.type] + (color === 'b' ? bishopBlackEvaluation[ycoord][xcoord] : bishopWhiteEvaluation[ycoord][xcoord]);
+        case 'r':
+            return chessPieceRV[piece.type] + (color === 'b' ? rooksBlackEvaluation[ycoord][xcoord] : rooksWhiteEvaluation[ycoord][xcoord]);
+        case 'q':
+            return chessPieceRV[piece.type] + (color === 'b' ? queenBlackEvaluation[ycoord][xcoord] : queenWhiteEvaluation[ycoord][xcoord]);
+        case 'k':
+            return chessPieceRV[piece.type] + (color === 'b' ? kingBlackEvaluation[ycoord][xcoord] : kingWhiteEvaluation[ycoord][xcoord]);
+        default:
+            console.log("Unknown chess piece");
+            return;
+    }
 }
 
 /**
@@ -97,10 +220,10 @@ var calculateNextMovesValueNegamax = function (counter, game, color, isMaximizin
         });
         // calculate every possible moves
         for (var i = 0; i < possibleMoves.length; i++) {
+            console.log('Thinking');
             var move = possibleMoves[i];
             game.move(move);
-            console.log(move);
-            value = calculateNextMovesNegamax(counter - 1, game, color, !isMaximizingPlayerValue, alpha, beta)[1];
+            value = calculateNextMovesValueNegamax(counter - 1, game, color, !isMaximizingPlayerValue, alpha, beta)[1];
 
             if (isMaximizingPlayerValue) {
                 if (value > bestMoveValue) {
@@ -114,16 +237,16 @@ var calculateNextMovesValueNegamax = function (counter, game, color, isMaximizin
                     bestMoveNegamax = move;
                     bestMoveValue = value;
                 }
-                beta = Maths.min(value, beta);
+                beta = Math.min(value, beta);
             }
             game.undo();
-            console.log("Alpha: " + alpha + "; Beta: " + beta);
 
             if (alpha >= beta) {
-                console.log("Alpha: " + alpha + "; Beta: " + beta);
                 break;
             }
         }
+
+        console.log(bestMoveNegamax);
         return [bestMoveNegamax, bestMoveValue];
     }
 }
