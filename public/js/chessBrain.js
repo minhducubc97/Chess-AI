@@ -10,7 +10,7 @@ var reverse2DArray = function (array) {
     return array;
 };
 
-var pawnWhiteEvaluation = [
+const pawnWhiteEvaluation = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [50, 50, 50, 50, 50, 50, 50, 50],
     [10, 10, 20, 30, 30, 20, 10, 10],
@@ -21,9 +21,9 @@ var pawnWhiteEvaluation = [
     [0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
-var pawnBlackEvaluation = reverse2DArray(pawnWhiteEvaluation);
+const pawnBlackEvaluation = reverse2DArray(pawnWhiteEvaluation);
 
-var knightWhiteEvaluation = [
+const knightWhiteEvaluation = [
     [-50, -40, -30, -30, -30, -30, -40, -50],
     [-40, -20, 0, 0, 0, 0, -20, -40],
     [-30, 0, 10, 15, 15, 10, 0, -30],
@@ -34,9 +34,9 @@ var knightWhiteEvaluation = [
     [-50, -40, -30, -30, -30, -30, -40, -50]
 ];
 
-var knightBlackEvaluation = reverse2DArray(knightWhiteEvaluation);
+const knightBlackEvaluation = reverse2DArray(knightWhiteEvaluation);
 
-var bishopWhiteEvaluation = [
+const bishopWhiteEvaluation = [
     [-20, -10, -10, -10, -10, -10, -10, -20],
     [-10, 0, 0, 0, 0, 0, 0, -10],
     [-10, 0, 5, 10, 10, 5, 0, -10],
@@ -47,9 +47,9 @@ var bishopWhiteEvaluation = [
     [-20, -10, -10, -10, -10, -10, -10, -20]
 ];
 
-var bishopBlackEvaluation = reverse2DArray(bishopWhiteEvaluation);
+const bishopBlackEvaluation = reverse2DArray(bishopWhiteEvaluation);
 
-var rooksWhiteEvaluation = [
+const rooksWhiteEvaluation = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [5, 10, 10, 10, 10, 10, 10, 5],
     [-5, 0, 0, 0, 0, 0, 0, -5],
@@ -60,9 +60,9 @@ var rooksWhiteEvaluation = [
     [0, 0, 0, 5, 5, 0, 0, 0]
 ];
 
-var rooksBlackEvaluation = reverse2DArray(rooksWhiteEvaluation);
+const rooksBlackEvaluation = reverse2DArray(rooksWhiteEvaluation);
 
-var queenWhiteEvaluation = [
+const queenWhiteEvaluation = [
     [-20, -10, -10, -5, -5, -10, -10, -20],
     [-10, 0, 0, 0, 0, 0, 0, -10],
     [-10, 0, 5, 5, 5, 5, 0, -10],
@@ -73,9 +73,9 @@ var queenWhiteEvaluation = [
     [-20, -10, -10, -5, -5, -10, -10, -20]
 ];
 
-var queenBlackEvaluation = reverse2DArray(queenWhiteEvaluation);
+const queenBlackEvaluation = reverse2DArray(queenWhiteEvaluation);
 
-var kingWhiteEvaluation = [
+const kingWhiteEvaluation = [
     [-30, -40, -40, -50, -50, -40, -40, -30],
     [-30, -40, -40, -50, -50, -40, -40, -30],
     [-30, -40, -40, -50, -50, -40, -40, -30],
@@ -86,9 +86,9 @@ var kingWhiteEvaluation = [
     [20, 30, 10, 0, 0, 10, 30, 20]
 ];
 
-var kingBlackEvaluation = reverse2DArray(kingWhiteEvaluation);
+const kingBlackEvaluation = reverse2DArray(kingWhiteEvaluation);
 
-var kingWhiteEndGameEvaluation = [
+const kingWhiteEndGameEvaluation = [
     [-50, -40, -30, -20, -20, -30, -40, -50],
     [-30, -20, -10, 0, 0, -10, -20, -30],
     [-30, -10, 20, 30, 30, 20, -10, -30],
@@ -99,10 +99,10 @@ var kingWhiteEndGameEvaluation = [
     [-50, -30, -30, -30, -30, -30, -30, -50]
 ];
 
-var kingBlackEndGameEvaluation = reverse2DArray(kingWhiteEndGameEvaluation);
+const kingBlackEndGameEvaluation = reverse2DArray(kingWhiteEndGameEvaluation);
 
 // assign each chess piece relative value based on https://www.chessprogramming.org/Simplified_Evaluation_Function
-var chessPieceRV = {
+const chessPieceRV = {
     'p': 100, // pawn
     'n': 320, // knight
     'b': 330, // bishop
@@ -215,9 +215,16 @@ var calculateNextMovesValueNegamax = function (counter, game, color, isMaximizin
         var bestMoveNegamax = null;
         var bestMoveValue = isMaximizingPlayerValue ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
         var possibleMoves = game.moves();
-        possibleMoves.sort(function (a, b) {
-            return .5 - Math.random()
-        });
+
+        // rank the move according to its best initial position
+        for (var i = 0; i < possibleMoves.length; i++) {
+            var move = possibleMoves[i];
+            game.move(move);
+            move.score = evaluateChessBoard(game.board(), color);
+            game.undo();
+        }
+
+        possibleMoves.sort(compareMoves);
         // calculate every possible moves
         for (var i = 0; i < possibleMoves.length; i++) {
             console.log('Thinking');
@@ -249,4 +256,19 @@ var calculateNextMovesValueNegamax = function (counter, game, color, isMaximizin
         console.log(bestMoveNegamax);
         return [bestMoveNegamax, bestMoveValue];
     }
+}
+
+/**
+ * Purpose: Compare move by its chessboard score
+ * @param {*} a move a
+ * @param {*} b move bS
+ */
+var compareMoves = function (a, b) {
+    if (a.score < b.score) {
+        return -1;
+    }
+    if (a.score > b.score) {
+        return 1;
+    }
+    return 0;
 }
