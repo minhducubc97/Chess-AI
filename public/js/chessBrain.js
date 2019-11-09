@@ -10,6 +10,7 @@ var reverse2DArray = function (array) {
     return array;
 };
 
+// evaluate the chessboard based on https://www.chessprogramming.org/Simplified_Evaluation_Function
 const pawnWhiteEvaluation = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [50, 50, 50, 50, 50, 50, 50, 50],

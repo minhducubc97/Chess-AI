@@ -4,10 +4,11 @@ Chess web app with customized Chess Artificial Intelligence .
 
 ## Algorithms 
 
-- Search: 
+- Decision tree: 
     - [Traditional minimax/Negamax](https://www.chessprogramming.org/Negamax)
     - [Alpha-beta pruning](https://www.chessprogramming.org/Alpha-Beta) 
-    - Move ordering based on chessboard evaluation.
+    - [Chessboard evaluation](https://www.chessprogramming.org/Simplified_Evaluation_Function).
+    - Move ordering
 - Evaluation:
     - [Chess piece relative values](https://www.chessprogramming.org/Simplified_Evaluation_Function)
 
