@@ -1,4 +1,4 @@
-# chess-ai
+# Improved Chess AI
 
 Chess web app with customized Chess Artificial Intelligence .
 
