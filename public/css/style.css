@@ -1,0 +1,8 @@
+#container .title h1 {
+  text-align: center;
+}
+
+#board {
+  width: 800px;
+  margin: auto;
+}
