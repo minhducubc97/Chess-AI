@@ -1,6 +1,8 @@
 # Improved Chess AI
 
-Chess web app with customized Chess Artificial Intelligence. The difficulty level of the game is around Medium. The web app is available to play online at: https://minhducubc97.github.io/Chess-AI/public/
+Chess web app with customized Chess Artificial Intelligence.
+
+This AI has an approximate ELO grade of 1500. The web app is available to play online at: https://minhducubc97.github.io/Chess-AI/public/
 
 ## Algorithms
 
