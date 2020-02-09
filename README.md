@@ -2,6 +2,8 @@
 
 Chess web app with customized Chess Artificial Intelligence.
 
+<img src="https://github.com/minhducubc97/Chess-AI/blob/master/images/chess.PNG" height="250">
+
 This AI has an approximate ELO grade of 1500. The web app is available to play online at: https://minhducubc97.github.io/Chess-AI/public/
 
 ## Algorithms
